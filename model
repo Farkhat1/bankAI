@@ -1,0 +1,44 @@
+# Импорт необходимых библиотек
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report
+
+# Загрузка датасета
+# Предполагается, что у вас есть CSV-файл с данными
+dataset_path = 'Dataset.csv'
+data = pd.read_csv(dataset_path)
+
+# Предобработка данных
+# Здесь вы можете выполнить необходимые шаги предобработки, например, заполнение пропущенных значений и кодирование категориальных переменных.
+
+# Определение признаков (X) и целевой переменной (y)
+X = data.drop('Approved', axis=1)
+y = data['Approved']
+
+# Разделение данных на обучающий и тестовый наборы
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Масштабирование признаков
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Создание и обучение модели логистической регрессии
+model = LogisticRegression()
+model.fit(X_train_scaled, y_train)
+
+# Прогнозирование на тестовом наборе
+predictions = model.predict(X_test_scaled)
+
+# Оценка производительности модели
+accuracy = accuracy_score(y_test, predictions)
+print(f'Accuracy: {accuracy}')
+
+# Вывод отчета о классификации
+print('Classification Report:')
+print(classification_report(y_test, predictions))
+
+# Теперь вы можете использовать обученную модель для предсказания решений о выдаче кредита.
+# Например, model.predict(new_customer_data)
